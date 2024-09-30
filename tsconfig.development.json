@@ -6,6 +6,5 @@
     "incremental": true /* Enable incremental compilation */,
     "tsBuildInfoFile": "./dist/.tsbuildinfo" /* Specify file to store incremental compilation information */,
     "diagnostics": true
-  },
-  "include": ["src/**/*"]
+  }
 }

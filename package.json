@@ -4,10 +4,9 @@
   "description": "",
   "type": "module",
   "main": "dist/index.js",
-  "types": "types/index.d.ts",
+  "types": "dist/index.d.ts",
   "files": [
-    "dist",
-    "types"
+    "dist"
   ],
   "scripts": {
     "dev": "tsc --project tsconfig.development.json --watch",
