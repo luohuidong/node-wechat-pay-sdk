@@ -1,45 +1,39 @@
-# Node TypeScript Template
-
-- [x] TypeScript
-- [ ] CommitLint
-- [x] Commitizen
-- [x] ESLint
-- [x] Prettier
-- [x] TypeDoc
-
-## Scaffolding your node project
-
-With NPM:
+# Node WeChatPay Api V3 SDK
 
 ```bash
-npm create @app-template/app@latest my-node-project -- --template node
+npm install node-wechatpay-api-v3-sdk
+# or
+pnpm add node-wechatpay-api-v3-sdk
 ```
 
-With PNPM:
+## 使用
 
-```bash
-pnpm create @app-template/app@latest my-node-project --template node
+### 初始化对象
+
+```ts
+import { WeChatPay } from "node-wechatpay-api-v3-sdk";
+
+const wechatPay = new WeChatPay({
+  appid: "xxx",
+  mchid: "xxx",
+  privateKey: "xxx", // 商户私钥
+  serialNo: "xxx", // 商户API证书序列号
+});
 ```
 
-## How to use
+### 创建订单
 
-### Development
+body 参数和返回值参考[Native下单](https://pay.weixin.qq.com/docs/merchant/apis/native-payment/direct-jsons/native-prepay.html)，参数 `appid` 和 `mchid` 不需要传，SDK 内部会自行处理，其他 body 参数和返回值与官方文档保持一致。
 
-```bash
-pnpm dev
-```
-
-### Production
-
-```bash
-pnpm build
-```
-
-### Testing
-
-Before running tests, make sure you have built the project.
-
-```bash
-pnpm dev # or pnpm build
-pnpm test # or pnpm test:watch
+```ts
+const result = await wechatPay.payTransactionsNative({
+  out_trade_no: "xxx",
+  time_expire: "xxx",
+  description: "xxx",
+  notify_url: "xxx",
+  amount: {
+    total: 100, // 根据自己实际情况传递
+  },
+  // ...
+});
 ```
