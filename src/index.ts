@@ -1,5 +1,8 @@
 import { getCurrentTimestamp, generateRandomString, getAuthorization } from "./utils/index.js";
-import type { PayTransactionsNativeRequestBody } from "./types.js";
+import type {
+  PayTransactionsNativeRequestBody,
+  PayTransactionsQueryByOutTradeNoResponseData,
+} from "./types.js";
 
 export class WeChatPay {
   private apiHost = "https://api.mch.weixin.qq.com";
@@ -17,7 +20,7 @@ export class WeChatPay {
     this.serialNo = options.serialNo;
   }
 
-  private authorizationGenerator(params: { method: "GET" | "POST"; url: string; body: string }) {
+  private authorizationGenerator(params: { method: "GET" | "POST"; url: string; body?: string }) {
     const timestamp = getCurrentTimestamp();
     const nonceStr = generateRandomString(32);
     const authorization = getAuthorization({
@@ -26,7 +29,7 @@ export class WeChatPay {
       privateKey: this.privateKey,
       serialNo: this.serialNo,
       url: params.url,
-      body: params.body,
+      body: params.body ?? "",
       nonceStr,
       timestamp,
     });
@@ -38,9 +41,7 @@ export class WeChatPay {
    * Native下单接口：/v3/pay/transactions/native
    * @see https://pay.weixin.qq.com/docs/merchant/apis/native-payment/direct-jsons/native-prepay.html
    */
-  async payTransactionsNative(params: PayTransactionsNativeRequestBody): Promise<{
-    code_url: string;
-  }> {
+  async payTransactionsNative(params: PayTransactionsNativeRequestBody) {
     const url = "/v3/pay/transactions/native";
 
     const body = JSON.stringify(
@@ -52,7 +53,6 @@ export class WeChatPay {
       url,
       body,
     });
-    console.log("🚀 ~ WeChatPay ~ payTransactionsNative ~ authorization:", authorization);
 
     const response = await fetch(`${this.apiHost}${url}`, {
       method: "POST",
@@ -63,7 +63,41 @@ export class WeChatPay {
       },
       body,
     });
-    console.log("🚀 ~ WeChatPay ~ payTransactionsNative ~ response:", response);
-    return response.json();
+
+    const responseData = await response.json();
+
+    if (!response.ok) {
+      console.error(responseData);
+      throw new Error(responseData.message);
+    }
+
+    return responseData as { code_url: string };
+  }
+
+  async payTransactionsQueryByOutTradeNo(params: { outTradeNo: string }) {
+    const url = `/v3/pay/transactions/out-trade-no/${params.outTradeNo}?mchid=${this.mchid}`;
+
+    const authorization = this.authorizationGenerator({
+      method: "GET",
+      url,
+    });
+
+    const response = await fetch(`${this.apiHost}${url}`, {
+      method: "POST",
+      headers: {
+        Authorization: authorization,
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+    });
+
+    const responseData = await response.json();
+
+    if (!response.ok) {
+      console.error(responseData);
+      throw new Error(responseData.message);
+    }
+
+    return responseData as PayTransactionsQueryByOutTradeNoResponseData;
   }
 }

@@ -37,3 +37,26 @@ export interface PayTransactionsNativeRequestBody {
     profit_sharing?: boolean;
   };
 }
+
+export interface PayTransactionsQueryByOutTradeNoResponseData {
+  amount: {
+    currency: string;
+    payer_currency: string;
+    payer_total: number;
+    total: number;
+  };
+  appid: string;
+  attach: string;
+  bank_type: string;
+  mchid: string;
+  out_trade_no: string;
+  payer: {
+    openid: string;
+  };
+  promotion_detail: any[];
+  success_time: string;
+  trade_state: string;
+  trade_state_desc: string;
+  trade_type: string;
+  transaction_id: string;
+}
