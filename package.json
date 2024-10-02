@@ -18,7 +18,11 @@
     "cz": "cz"
   },
   "keywords": [],
-  "author": "",
+  "author": "luohuidong",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/luohuidong/node-wechatpay-api-v3-sdk.git"
+  },
   "devDependencies": {
     "@eslint/js": "^9.11.1",
     "@tsconfig/recommended": "^1.0.7",
