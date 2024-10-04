@@ -15,7 +15,10 @@
     "lint": "eslint",
     "test": "node --enable-source-maps --test dist/",
     "test:watch": "node --enable-source-maps --test --watch dist/",
-    "cz": "cz"
+    "cz": "cz",
+    "docs:dev": "vitepress dev docs",
+    "docs:build": "vitepress build docs",
+    "docs:preview": "vitepress preview docs"
   },
   "keywords": [],
   "author": "luohuidong",

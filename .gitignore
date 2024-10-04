@@ -10,3 +10,7 @@ coverage
 .vscode/*
 !.vscode/extensions.json
 .idea
+
+# vitepress
+docs/.vitepress/dist
+docs/.vitepress/cache

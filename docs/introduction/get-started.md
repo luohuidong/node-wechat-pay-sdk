@@ -1,4 +1,6 @@
-# Node WeChatPay SDK
+# 开始使用
+
+## 安装
 
 ```bash
 npm install node-wechatpay-api-v3-sdk
@@ -8,7 +10,7 @@ pnpm add node-wechatpay-api-v3-sdk
 
 ## 使用
 
-### 初始化对象
+初始化对象：
 
 ```ts
 import { WeChatPay } from "node-wechatpay-api-v3-sdk";
@@ -21,9 +23,7 @@ const wechatPay = new WeChatPay({
 });
 ```
 
-### 创建订单
-
-body 参数和返回值参考[Native下单](https://pay.weixin.qq.com/docs/merchant/apis/native-payment/direct-jsons/native-prepay.html)，参数 `appid` 和 `mchid` 不需要传，SDK 内部会自行处理，其他 body 参数和返回值与官方文档保持一致。
+调用 api 接口
 
 ```ts
 const result = await wechatPay.payTransactionsNative({
