@@ -1,4 +1,4 @@
-import { getCurrentTimestamp, generateRandomString, getAuthorization } from "./utils/index.js";
+import { getCurrentTimestamp, AuthorizationGenerator } from "./utils/index.js";
 import type {
   PayTransactionsNativeRequestBody,
   PayTransactionsQueryByOutTradeNoResponseData,
@@ -9,32 +9,38 @@ export class WeChatPay {
   private appid: string;
   private mchid: string;
   /** 商户私钥 */
-  private privateKey: string;
+  private merchantPrivateKey: string;
   /** 商户API证书序列号 */
-  private serialNo: string;
+  private merchantSerialNo: string;
+  /** 微信支付平台证书 */
+  private platformCert: string;
+  /** 微信支付平台证书序列号 */
+  private platformSerialNo: string;
+  private v3Key: string;
+  private authorizationGenerator: AuthorizationGenerator;
 
-  constructor(options: { appid: string; mchid: string; privateKey: string; serialNo: string }) {
+  constructor(options: {
+    appid: string;
+    mchid: string;
+    merchantPrivateKey: string;
+    merchantSerialNo: string;
+    platformCert: string;
+    platformSerialNo: string;
+    v3Key: string;
+  }) {
     this.appid = options.appid;
     this.mchid = options.mchid;
-    this.privateKey = options.privateKey;
-    this.serialNo = options.serialNo;
-  }
+    this.merchantPrivateKey = options.merchantPrivateKey;
+    this.merchantSerialNo = options.merchantSerialNo;
+    this.platformCert = options.platformCert;
+    this.platformSerialNo = options.platformSerialNo;
+    this.v3Key = options.v3Key;
 
-  private authorizationGenerator(params: { method: "GET" | "POST"; url: string; body?: string }) {
-    const timestamp = getCurrentTimestamp();
-    const nonceStr = generateRandomString(32);
-    const authorization = getAuthorization({
+    this.authorizationGenerator = new AuthorizationGenerator({
       mchid: this.mchid,
-      method: params.method,
-      privateKey: this.privateKey,
-      serialNo: this.serialNo,
-      url: params.url,
-      body: params.body ?? "",
-      nonceStr,
-      timestamp,
+      merchantPrivateKey: this.merchantPrivateKey,
+      merchantSerialNo: this.merchantSerialNo,
     });
-
-    return authorization;
   }
 
   /**
@@ -48,7 +54,7 @@ export class WeChatPay {
       Object.assign({}, params, { appid: this.appid, mchid: this.mchid })
     );
 
-    const authorization = this.authorizationGenerator({
+    const authorization = this.authorizationGenerator.generate({
       method: "POST",
       url,
       body,
@@ -77,7 +83,7 @@ export class WeChatPay {
   async payTransactionsQueryByOutTradeNo(params: { outTradeNo: string }) {
     const url = `/v3/pay/transactions/out-trade-no/${params.outTradeNo}?mchid=${this.mchid}`;
 
-    const authorization = this.authorizationGenerator({
+    const authorization = this.authorizationGenerator.generate({
       method: "GET",
       url,
     });
