@@ -1,3 +1,5 @@
+import crypto from "node:crypto";
+
 import { getCurrentTimestamp, AuthorizationGenerator } from "./utils/index.js";
 import type {
   PayTransactionsNativeRequestBody,
@@ -105,5 +107,26 @@ export class WeChatPay {
     }
 
     return responseData as PayTransactionsQueryByOutTradeNoResponseData;
-  }
+  /**
+   * 解密
+   * @param params
+   * @returns
+   */
+  decryptData = (params: { ciphertext: string; nonce: string; associatedData: string }) => {
+    if (this.v3Key.length !== 32) {
+      throw new Error("v3Key length must be 32");
+    }
+
+    const ciphertext = Buffer.from(params.ciphertext, "base64");
+    const decipher = crypto.createDecipheriv("aes-256-gcm", this.v3Key, params.nonce);
+    decipher.setAAD(Buffer.from(params.associatedData));
+    decipher.setAuthTag(ciphertext.subarray(ciphertext.length - 16));
+    let decrypted = decipher.update(
+      ciphertext.subarray(0, ciphertext.length - 16),
+      undefined,
+      "utf8"
+    );
+
+    return decrypted;
+  };
 }
