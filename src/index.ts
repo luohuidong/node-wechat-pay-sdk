@@ -2,6 +2,7 @@ import crypto from "node:crypto";
 
 import { getCurrentTimestamp, AuthorizationGenerator } from "./utils/index.js";
 import type {
+  Certificates,
   PayTransactionsNativeRequestBody,
   PayTransactionsQueryByOutTradeNoResponseData,
 } from "./types.js";
@@ -44,72 +45,13 @@ export class WeChatPay {
     });
   }
 
-  /**
-   * Native下单接口：/v3/pay/transactions/native
-   * @see https://pay.weixin.qq.com/docs/merchant/apis/native-payment/direct-jsons/native-prepay.html
-   */
-  async payTransactionsNative(params: PayTransactionsNativeRequestBody) {
-    const url = "/v3/pay/transactions/native";
+  private request = async <T>(params: { url: string; method: "GET" | "POST"; body?: object }) => {
+    const body = params.body ? JSON.stringify(params.body) : undefined;
 
-    const body = JSON.stringify(
-      Object.assign({}, params, { appid: this.appid, mchid: this.mchid })
-    );
-
-    const authorization = this.authorizationGenerator.generate({
-      method: "POST",
-      url,
-      body,
-    });
-
-    const response = await fetch(`${this.apiHost}${url}`, {
-      method: "POST",
-      headers: {
-        Authorization: authorization,
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      body,
-    });
-
-    const responseData = await response.json();
-
-    if (!response.ok) {
-      console.error(responseData);
-      throw new Error(responseData.message);
-    }
-
-    return responseData as { code_url: string };
-  }
-
-  async payTransactionsQueryByOutTradeNo(params: { outTradeNo: string }) {
-    const url = `/v3/pay/transactions/out-trade-no/${params.outTradeNo}?mchid=${this.mchid}`;
-
-    const authorization = this.authorizationGenerator.generate({
-      method: "GET",
-      url,
-    });
-
-    const response = await fetch(`${this.apiHost}${url}`, {
-      method: "POST",
-      headers: {
-        Authorization: authorization,
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-    });
-
-    const responseData = await response.json();
-
-    if (!response.ok) {
-      console.error(responseData);
-      throw new Error(responseData.message);
-    }
-
-    return responseData as PayTransactionsQueryByOutTradeNoResponseData;
-  private request = async <T>(params: { url: string; method: "GET" | "POST" }) => {
     const authorization = this.authorizationGenerator.generate({
       method: params.method,
       url: params.url,
+      body,
     });
 
     const response = await fetch(`${this.apiHost}${params.url}`, {
@@ -120,6 +62,7 @@ export class WeChatPay {
         "Content-Type": "application/json",
         "Accept-Language": "zh-CN",
       },
+      body,
     });
 
     const responseData = await response.json();
@@ -130,6 +73,26 @@ export class WeChatPay {
     }
 
     return responseData as T;
+  };
+
+  /**
+   * Native下单接口：/v3/pay/transactions/native
+   * @see https://pay.weixin.qq.com/docs/merchant/apis/native-payment/direct-jsons/native-prepay.html
+   */
+  payTransactionsNative = async (params: PayTransactionsNativeRequestBody) => {
+    const data = await this.request<{ code_url: string }>({
+      url: "/v3/pay/transactions/native",
+      method: "POST",
+      body: Object.assign({}, params, { appid: this.appid, mchid: this.mchid }),
+    });
+    return data;
+  };
+
+  payTransactionsQueryByOutTradeNo = async (params: { outTradeNo: string }) => {
+    return await this.request<PayTransactionsQueryByOutTradeNoResponseData>({
+      url: `/v3/pay/transactions/out-trade-no/${params.outTradeNo}?mchid=${this.mchid}`,
+      method: "GET",
+    });
   };
 
   /**
