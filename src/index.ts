@@ -14,11 +14,12 @@ export class WeChatPay {
   private merchantPrivateKey: string;
   /** 商户API证书序列号 */
   private merchantSerialNo: string;
-  /** 微信支付平台证书 */
-  private platformCert: string;
-  /** 微信支付平台证书序列号 */
-  private platformSerialNo: string;
   private v3Key: string;
+  /** 平台证书序列号 */
+  private platformSerialNo: string;
+  /** 微信支付平台证书 */
+  private platformCert: Record<string, string> = {};
+
   private authorizationGenerator: AuthorizationGenerator;
 
   constructor(options: {
@@ -26,7 +27,6 @@ export class WeChatPay {
     mchid: string;
     merchantPrivateKey: string;
     merchantSerialNo: string;
-    platformCert: string;
     platformSerialNo: string;
     v3Key: string;
   }) {
@@ -34,7 +34,6 @@ export class WeChatPay {
     this.mchid = options.mchid;
     this.merchantPrivateKey = options.merchantPrivateKey;
     this.merchantSerialNo = options.merchantSerialNo;
-    this.platformCert = options.platformCert;
     this.platformSerialNo = options.platformSerialNo;
     this.v3Key = options.v3Key;
 
@@ -107,6 +106,50 @@ export class WeChatPay {
     }
 
     return responseData as PayTransactionsQueryByOutTradeNoResponseData;
+  private request = async <T>(params: { url: string; method: "GET" | "POST" }) => {
+    const authorization = this.authorizationGenerator.generate({
+      method: params.method,
+      url: params.url,
+    });
+
+    const response = await fetch(`${this.apiHost}${params.url}`, {
+      method: params.method,
+      headers: {
+        Authorization: authorization,
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        "Accept-Language": "zh-CN",
+      },
+    });
+
+    const responseData = await response.json();
+
+    if (!response.ok) {
+      console.error(responseData);
+      throw new Error(responseData.message);
+    }
+
+    return responseData as T;
+  };
+
+  /**
+   * 获取平台证书
+   */
+  private downloadPlatformCert = async () => {
+    const url = "/v3/certificates";
+    const { data } = await this.request<{ data: Certificates }>({ url, method: "GET" });
+
+    data.forEach((item) => {
+      const { serial_no, encrypt_certificate } = item;
+      const { nonce, associated_data, ciphertext } = encrypt_certificate;
+      this.platformCert[serial_no] = this.decryptData({
+        ciphertext,
+        nonce,
+        associatedData: associated_data,
+      });
+    });
+  };
+
   /**
    * 解密
    * @param params

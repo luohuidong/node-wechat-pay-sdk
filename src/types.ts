@@ -60,3 +60,15 @@ export interface PayTransactionsQueryByOutTradeNoResponseData {
   trade_type: string;
   transaction_id: string;
 }
+
+export type Certificates = {
+  serial_no: string;
+  effective_time: string;
+  expire_time: string;
+  encrypt_certificate: {
+    algorithm: string;
+    nonce: string;
+    associated_data: string;
+    ciphertext: string;
+  };
+}[];
