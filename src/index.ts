@@ -114,6 +114,50 @@ export class WeChatPay {
   };
 
   /**
+   * 签名验证
+   * @param params
+   * @see https://pay.weixin.qq.com/docs/merchant/development/interface-rules/signature-verification.html
+   */
+  signVerify = async (params: {
+    /** HTTP 头 Wechatpay-Signature。应答的微信支付签名*/
+    signature: string;
+    /** HTTP 头 Wechatpay-Serial。微信支付平台证书的序列号，验签必须使用序列号对应的微信支付平台证书 */
+    serialNo: string;
+    /** HTTP 头 Wechatpay-Nonce。签名中的随机数 */
+    nonce: string;
+    /** HTTP 头 Wechatpay-Timestamp。签名中的时间戳 */
+    timestamp: number;
+    /** body: 应答的原始报文主体 */
+    body: string;
+  }) => {
+    // 1. 检查平台证书序列号
+    if (params.serialNo !== this.platformSerialNo) {
+      throw new Error("serialNo not match");
+    }
+
+    // 2. 防止重放攻击，检查时间戳是否已过期
+    if (params.timestamp + 5 * 60 < getCurrentTimestamp()) {
+      throw new Error("timestamp expired");
+    }
+
+    // 3. 下载平台证书
+    if (!this.platformCert[this.platformSerialNo]) {
+      await this.downloadPlatformCert();
+    }
+
+    // 4. 验证签名
+    const x509 = new crypto.X509Certificate(this.platformCert[this.platformSerialNo]);
+    const publicKey = x509.publicKey.export({ type: "spki", format: "pem" });
+    const verify = crypto.createVerify("RSA-SHA256");
+    verify.update(`${params.timestamp}\n${params.nonce}\n${params.body}\n`);
+    const result = verify.verify(publicKey, params.signature, "base64");
+
+    if (!result) {
+      throw new Error("signature verify failed");
+    }
+  };
+
+  /**
    * 解密
    * @param params
    * @returns
