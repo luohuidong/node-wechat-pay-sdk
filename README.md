@@ -27,9 +27,11 @@ import { WeChatPay } from "node-wechatpay-api-v3-sdk";
 
 const wechatPay = new WeChatPay({
   appid: "xxx",
-  mchid: "xxx",
-  privateKey: "xxx", // 商户私钥
-  serialNo: "xxx", // 商户API证书序列号
+  mchid: "xxx", // 商户号
+  merchantPrivateKey: "xxx", // 商户私钥
+  merchantSerialNo: "xxx", // 商户API证书序列号
+  platformSerialNo: "xxx", // 平台证书序列号
+  v3Key: "xxx", // API v3 密钥
 });
 ```
 
