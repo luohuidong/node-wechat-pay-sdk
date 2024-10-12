@@ -1,5 +1,5 @@
 {
-  "name": "node-wechatpay-api-v3-sdk",
+  "name": "node-wechatpay-sdk",
   "version": "0.1.0",
   "description": "",
   "type": "module",
@@ -11,7 +11,6 @@
   "scripts": {
     "dev": "tsc --project tsconfig.development.json --watch",
     "build": "tsc --project tsconfig.production.json",
-    "build:doc": "typedoc --tsconfig tsconfig.production.json",
     "lint": "eslint",
     "test": "node --enable-source-maps --test dist/",
     "test:watch": "node --enable-source-maps --test --watch dist/",
@@ -35,7 +34,6 @@
     "eslint": "^9.12.0",
     "globals": "^15.11.0",
     "prettier": "^3.3.3",
-    "typedoc": "^0.26.8",
     "typescript": "^5.6.3",
     "typescript-eslint": "^8.8.1",
     "vitepress": "^1.4.0"
