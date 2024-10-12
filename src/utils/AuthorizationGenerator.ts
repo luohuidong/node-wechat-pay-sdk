@@ -24,7 +24,7 @@ export class AuthorizationGenerator {
     body: string;
   }) {
     // 生成签名串
-    let signatureString = `${options.method}\n${options.url}\n${options.timestamp}\n${options.nonceStr}\n${options.body}\n`;
+    const signatureString = `${options.method}\n${options.url}\n${options.timestamp}\n${options.nonceStr}\n${options.body}\n`;
 
     // 使用私钥对签名串进行签名
     const sign = crypto.createSign("SHA256");
@@ -36,10 +36,10 @@ export class AuthorizationGenerator {
   }
 
   private generateRandomString(length: number) {
-    var result = "";
-    var characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-    var charactersLength = characters.length;
-    for (var i = 0; i < length; i++) {
+    let result = "";
+    const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    const charactersLength = characters.length;
+    for (let i = 0; i < length; i++) {
       result += characters.charAt(Math.floor(Math.random() * charactersLength));
     }
     return result;

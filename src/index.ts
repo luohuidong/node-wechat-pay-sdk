@@ -171,7 +171,7 @@ export class WeChatPay {
     const decipher = crypto.createDecipheriv("aes-256-gcm", this.v3Key, params.nonce);
     decipher.setAAD(Buffer.from(params.associatedData));
     decipher.setAuthTag(ciphertext.subarray(ciphertext.length - 16));
-    let decrypted = decipher.update(
+    const decrypted = decipher.update(
       ciphertext.subarray(0, ciphertext.length - 16),
       undefined,
       "utf8"

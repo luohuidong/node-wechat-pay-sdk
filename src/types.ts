@@ -53,7 +53,7 @@ export interface PayTransactionsQueryByOutTradeNoResponseData {
   payer: {
     openid: string;
   };
-  promotion_detail: any[];
+  promotion_detail: unknown[];
   success_time: string;
   trade_state: string;
   trade_state_desc: string;
