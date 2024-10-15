@@ -88,6 +88,12 @@ export class WeChatPay {
     return data;
   };
 
+  /**
+   * 通过商户号查询微信订单信息
+   * @see https://pay.weixin.qq.com/docs/merchant/apis/native-payment/query-by-out-trade-no.html
+   * @param params
+   * @returns
+   */
   payTransactionsQueryByOutTradeNo = async (params: { outTradeNo: string }) => {
     return await this.request<PayTransactionsQueryByOutTradeNoResponseData>({
       url: `/v3/pay/transactions/out-trade-no/${params.outTradeNo}?mchid=${this.mchid}`,
