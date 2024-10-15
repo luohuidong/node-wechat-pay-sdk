@@ -55,7 +55,7 @@ export interface PayTransactionsQueryByOutTradeNoResponseData {
   };
   promotion_detail: unknown[];
   success_time: string;
-  trade_state: string;
+  trade_state: "SUCCESS" | "REFUND" | "NOTPAY" | "CLOSED" | "REVOKED" | "USERPAYING" | "PAYERROR";
   trade_state_desc: string;
   trade_type: string;
   transaction_id: string;
