@@ -2,7 +2,7 @@ import { defineConfig } from "vitepress";
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
-  title: "WeChat Pay Node SDK",
+  title: "Node WeChat Pay SDK",
   description: "Node WechatPay API V3 SDK",
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
@@ -21,11 +21,13 @@ export default defineConfig({
         text: "API",
         items: [
           { text: "Native下单接口", link: "/api/transactions-native" },
+          { text: "查询订单", link: "/api/transactions-query" },
           { text: "签名验证", link: "/api/sign-verify" },
+          { text: "解密", link: "/api/decrypt-data" },
         ],
       },
     ],
 
-    socialLinks: [{ icon: "github", link: "https://github.com/luohuidong/wechat-pay-node-sdk" }],
+    socialLinks: [{ icon: "github", link: "https://github.com/luohuidong/node-wechat-pay-sdk" }],
   },
 });
