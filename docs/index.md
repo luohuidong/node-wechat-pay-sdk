@@ -3,7 +3,7 @@
 layout: home
 
 hero:
-  name: "Node WechatPay SDK"
+  name: "WeChat Node Pay SDK"
   text: "适配微信支付 API v3"
   tagline: 让你的 Node 项目更轻松地接入微信支付
   actions:
