@@ -1,5 +1,5 @@
 {
-  "name": "node-wechatpay-sdk",
+  "name": "wechat-pay-node-sdk",
   "version": "0.1.0",
   "description": "",
   "type": "module",
@@ -23,7 +23,7 @@
   "author": "luohuidong",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/luohuidong/node-wechatpay-api-v3-sdk.git"
+    "url": "git+https://github.com/luohuidong/wechat-pay-node-sdk.git"
   },
   "devDependencies": {
     "@eslint/js": "^9.12.0",
