@@ -1,6 +1,8 @@
-# Node WeChatPay SDK
+# WeChat Pay Node SDK
 
-Node WechatPay SDK 适配微信支付 API v3，封装了大量调用微信支付需要实现的技术细节，让 Node 项目接入微信支付更便捷。
+[WeChat Pay Node SDK 文档](https://wechat-pay-node-sdk.)
+
+WechatPay Node SDK 适配微信支付 API v3，封装了大量调用微信支付需要实现的技术细节，让 Node 项目接入微信支付更便捷。
 
 注意：
 
@@ -11,9 +13,9 @@ Node WechatPay SDK 适配微信支付 API v3，封装了大量调用微信支付
 ## 安装
 
 ```bash
-npm install node-wechatpay-sdk
+npm install wechat-pay-node-sdk
 # or
-pnpm add node-wechatpay-sdk
+pnpm add wechat-pay-node-sdk
 ```
 
 ## 使用
@@ -21,7 +23,7 @@ pnpm add node-wechatpay-sdk
 初始化对象：
 
 ```ts
-import { WeChatPay } from "node-wechatpay-api-v3-sdk";
+import { WeChatPay } from "wechat-pay-node-sdk";
 
 const wechatPay = new WeChatPay({
   appid: "xxx",
